@@ -78,17 +78,11 @@ if flag:
         with os.fdopen(fd, 'w') as tmp:
             tmp.write('\n'.join(encoded_syms))
         # Need subprocess because jython doesn't support ctypes properly
-        helper = '%s/ghidra_scripts/Syms2Elf_HELPER.py' % os.environ['HOME']
+        helper = '%s/ghidra_scripts/syms2elf_HELPER.py' % os.environ['HOME']
         if not os.path.exists(helper):
             print 'Error: did you copy the HELPER script in the right position?'
-            print '%s/ghidra_scripts/Syms2Elf_HELPER.py not found' % os.environ['HOME']
+            print '%s/ghidra_scripts/syms2elf_HELPER.py not found' % os.environ['HOME']
         else:
-            sub = subprocess.Popen( ' '.join(['python', '%s/ghidra_scripts/Syms2Elf_HELPER.py' % os.environ['HOME'], infile, outfile, tmp_path]), \ # code injection as pathname?
-                            shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            sub.wait()
-            if sub.returncode:
-                print 'Something gone wrong, helper return value: %d' % sub.returncode        
-            print sub.stdout.read()
-            print sub.stderr.read()
+            subprocess.call(['python2', '%s/ghidra_scripts/syms2elf_HELPER.py' % os.environ['HOME'], infile, outfile, tmp_path])
     finally:
         os.remove(tmp_path)
